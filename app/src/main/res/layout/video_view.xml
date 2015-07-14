@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextureView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/surface"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/videoTitleFrameLayout"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="60dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="The Big Foot"
+            android:textSize="60sp"
+            android:textStyle="bold"
+            android:id="@+id/videoTitleText"
+            android:textColor="#ffffff"/>
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/videoTitleFrameLayout"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/videoSubTitleFrameLayout"
+        android:layout_marginLeft="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Aina is watching this"
+            android:id="@+id/videoSubTitleText"
+            android:textColor="#ffffff"
+            android:textSize="18sp"/>
+    </FrameLayout>
+
+</RelativeLayout>
