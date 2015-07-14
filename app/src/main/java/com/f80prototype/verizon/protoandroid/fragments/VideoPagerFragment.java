@@ -5,19 +5,23 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.f80prototype.verizon.protoandroid.MainActivity;
 import com.f80prototype.verizon.protoandroid.R;
 import com.f80prototype.verizon.protoandroid.adapters.VideoPagerAdapter;
 
 /**
  * Created by inyanja on 7/10/15.
  */
-public class VideoPagerFragment extends Fragment implements View.OnClickListener {
+public class VideoPagerFragment extends Fragment implements View.OnClickListener, View.OnTouchListener {
 
     private ViewPager mVideoViewPager;
     private VideoPagerAdapter mVideoPagerAdapter;
@@ -38,6 +42,8 @@ public class VideoPagerFragment extends Fragment implements View.OnClickListener
         mVideoViewPager.setAdapter(mVideoPagerAdapter);
         mVideoViewPager.setCurrentItem(0);
 
+        mVideoViewPager.setOnTouchListener(this);
+
         return rootView;
     }
 
@@ -49,56 +55,6 @@ public class VideoPagerFragment extends Fragment implements View.OnClickListener
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
-
-           /* mTextureView.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View view, MotionEvent event) {
-                        switch (event.getAction()) {
-                            case MotionEvent.ACTION_DOWN:
-                                x1 = event.getX();
-                                y1 = event.getY();
-                                break;
-
-                            case MotionEvent.ACTION_UP:
-                                x2 = event.getX();
-                                y2 = event.getY();
-
-                                // if Up to Down swipe event on screen
-                                if (y1 < y2) {
-                                    updateTextureViewSize(mVideoWidth, mVideoHeight);
-                                    MainActivity.changeViewPageParams(1);
-                                    MainActivity.myConversation.setVisibility(View.VISIBLE);
-                                }
-
-                                // if Down to Up swipe event on screen
-                                if (y1 > y2) {
-                                    downToUp();
-                                }
-                                break;
-                        }
-                        return true;
-                    }
-                }
-
-            );
-
-        protected static void upToDown(){
-            updateTextureViewSize(mVideoWidth, mVideoHeight);
-            MainActivity.changeViewPageParams(1);
-            MainActivity.myConversation.setVisibility(View.VISIBLE);
-        }
-        protected static void downToUp() {
-            updateTextureViewSize(mVideoWidth, resizeHeight);
-            MainActivity.changeViewPageParams(0);
-        }
-
-
-        public static void updateTextureViewSize(int mVideoWidth, int mVideoHeight) {
-            title.setVisibility(View.INVISIBLE);
-            subTitle.setVisibility(View.INVISIBLE);
-            mTextureView.setLayoutParams(new RelativeLayout.LayoutParams(mVideoWidth, mVideoHeight));
-        }*/
     }
 
 
@@ -121,13 +77,65 @@ public class VideoPagerFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        mCallbacks.onResizeButtonClicked();
+        resizeButton.setVisibility(View.INVISIBLE);
+        mCallbacks.onResizeButtonClicked(true);
+    }
+
+    @Override
+    public boolean onTouch(View view, MotionEvent motionEvent) {
+
+        String TAG = MainActivity.class.getSimpleName();
+        float initialX = 0f;
+        float initialY = 0f;
+        float finalX = 0f;
+        float finalY = 0f;
+
+        int action = motionEvent.getActionMasked();
+
+        switch (action) {
+
+            case MotionEvent.ACTION_DOWN:
+                initialX = motionEvent.getX();
+                initialY = motionEvent.getY();
+
+                Log.d(TAG, "Action was DOWN");
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                Log.d(TAG, "Action was MOVE");
+                break;
+
+            case MotionEvent.ACTION_UP:
+                finalX = motionEvent.getX();
+                finalY = motionEvent.getY();
+
+                if (initialY < finalY) {
+                    //Log.d(TAG, "Down to Up swipe performed");
+                    resizeButton.setVisibility(View.VISIBLE);
+                    mCallbacks.onResizeButtonClicked(false);
+                }
+
+
+
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+                Log.d(TAG,"Action was CANCEL");
+                break;
+
+            case MotionEvent.ACTION_OUTSIDE:
+                Log.d(TAG, "Movement occurred outside bounds of current screen element");
+                break;
+        }
+
+
+
+
+        return false;
     }
 
     public static interface VideoPagerFragmentCallbacks {
-        /**
-         * Called when an item in the navigation drawer is selected.
-         */
-        void onResizeButtonClicked();
+
+        void onResizeButtonClicked(Boolean isCollapseVideo);
     }
 }
