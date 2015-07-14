@@ -1,5 +1,6 @@
 package com.f80prototype.verizon.protoandroid;
 
+import android.animation.ObjectAnimator;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.BounceInterpolator;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
@@ -125,17 +127,19 @@ public class MainActivity extends FragmentActivity implements VideoViewFragment.
 
     @Override
     public void onResizeButtonClicked() {
-        TranslateAnimation anim = new TranslateAnimation( display.widthPixels, display.widthPixels,
-                display.heightPixels, display.heightPixels/3 );
-        anim.setDuration(1000);
-        //anim.setFillAfter( true );
-        mVideoPagerFragment.getView().startAnimation(anim);
 
-        TranslateAnimation anim1 = new TranslateAnimation( display.widthPixels, display.widthPixels,
-                0, display.heightPixels/2 );
-        anim1.setDuration(1000);
-        //anim1.setFillAfter(true);
-        mConversationFragment.getView().startAnimation(anim1);
+        BounceInterpolator bounceInterpolator = new BounceInterpolator();
+        ObjectAnimator anim = ObjectAnimator.ofFloat(mVideoPagerFragment.getView(),
+                "translationY", 0,  - display.heightPixels/2);
+        anim.setInterpolator(bounceInterpolator);
+        anim.setDuration(1100).start();
+
+        BounceInterpolator bounceInterpolator2 = new BounceInterpolator();
+        ObjectAnimator anim2 = ObjectAnimator.ofFloat(mConversationFragment.getView()
+                , "translationY", 0f, - display.heightPixels/2);
+        anim2.setInterpolator(bounceInterpolator2);
+        anim2.setDuration(1100).start();
+
 
         //collapse(mVideoPagerFragment.getView());
         //expand(mConversationFragment.getView());
@@ -147,12 +151,15 @@ public class MainActivity extends FragmentActivity implements VideoViewFragment.
 
         //v.getLayoutParams().height = display.heightPixels/2;
         //v.setVisibility(View.VISIBLE);
+        final float mToHeight = display.heightPixels/2;
+        final float mFromHeight = 0;
         v.getLayoutParams().height = 0;
         Animation a = new Animation()
         {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = (int)(targetHeight * interpolatedTime);
+                float height = (mToHeight - mFromHeight) * interpolatedTime + mFromHeight;
+                v.getLayoutParams().height = (int)height;
                 v.requestLayout();
             }
 
@@ -171,11 +178,15 @@ public class MainActivity extends FragmentActivity implements VideoViewFragment.
     public  void collapse(final View v) {
         final int targetHeight = display.heightPixels/3;
 
+        final float mToHeight = display.heightPixels/3;
+        final float mFromHeight = 0;
+
         Animation a = new Animation()
         {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
-                v.getLayoutParams().height = (int)(targetHeight * interpolatedTime);
+                float height = (mToHeight - mFromHeight) * interpolatedTime + mFromHeight;
+                v.getLayoutParams().height = (int)height;
                 v.requestLayout();
 
             }
